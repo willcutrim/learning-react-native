@@ -1,34 +1,31 @@
 import { Text, View, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { styles } from './styles';
+import React, {useState} from 'react'; 
 
 import { Participant } from './components/Participant';
 
 export function Home(){
-    const participantes = [
-        'willyam', 
-        'deborah', 
-        'brenda', 
-        'Junior', 
-        'lucas', 
-        'ingrid',
-        'daniel',
-        'alberth',
-        'adassah',
-        'alexandra',
-    ];
+
+    // Gerenciadores de estado
+    const [participantes, setParticipantes] = useState<string[]>([]);
+    const [participanteName, setParticipanteName] = useState('');
     
+    // função para adicionar um participante
     function handleParticipantAdd(){
-        if(participantes.includes("ney delas")){
+        if(participantes.includes(participanteName)){
             return Alert.alert("Pariticapente existente", "Já tem alguem com esse nome!");
         }
-        console.log('adicionado');
+        setParticipantes(prevState => [...prevState, participanteName]);
+        setParticipanteName('');
     }
 
+    // função para remover um participante
     function handleParticipantRemove(name: string){
+
         Alert.alert("Remover", `Remover o participante ${name}?`, [
             {
                 text: 'Sim',
-                onPress: () => Alert.alert("deletado com sucesso!")
+                onPress: () =>  setParticipantes(prevState => prevState.filter(participantes =>participantes !== name))
             },
 
             {
@@ -39,6 +36,12 @@ export function Home(){
         ]);
     }
 
+    // function handleState(value: string){
+    //     setParticipanteName(value);
+    //     console.log(participanteName);
+    // }
+
+    // retornando minha aplicação/layout
     return (
     <View style={styles.container}>
         <Text 
@@ -56,6 +59,8 @@ export function Home(){
                 style={styles.input}
                 placeholder="Nome do participante"
                 placeholderTextColor='#6B6B6B'
+                onChangeText={setParticipanteName}
+                value={participanteName}
             />
 
             <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
@@ -65,6 +70,7 @@ export function Home(){
             </TouchableOpacity>
         </View>
 
+        {/* exibir lista de participantes */}
         <FlatList 
             data={participantes}
             keyExtractor={item => item}
@@ -78,12 +84,10 @@ export function Home(){
 
             ListEmptyComponent={() => (
                 <Text style={styles.listaVazia}>
-                    Adicione alguem a sua lita.
+                    Adicione alguem a sua lista.
                 </Text>
             )}
-        
         />
-
     </View>
     )
 }
